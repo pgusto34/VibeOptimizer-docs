@@ -1,0 +1,19 @@
+# Authoring template; these illustrative identities must be replaced with real ones.
+schema_version: 3
+framework: vllm
+repository: https://github.com/vllm-project/vllm.git
+before_commit: "1111111111111111111111111111111111111111"
+platform: linux/amd64
+architectures:
+  "9.0":
+    dockerfile: Dockerfile.9.0
+    recipe: recipe.9.0.yaml
+    toolchain:
+      cuda: "12.8.1"
+      python: "3.12"
+      max_jobs: 4
+      nvcc_threads: 1
+    images:
+      before:
+        tag: docker.io/your-org/vllm:my-serving-case-9.0-before
+        digest: "sha256:1111111111111111111111111111111111111111111111111111111111111111"

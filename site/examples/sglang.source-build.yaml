@@ -1,0 +1,78 @@
+schema_version: 2
+source_root: /sgl-workspace/sglang
+editable_paths:
+- python/sglang/**
+- sgl-kernel/**
+- python/pyproject.toml
+- python/setup.py
+- python/requirements/**
+protected_paths:
+- .git/**
+- .github/**
+- tests/**
+- test/**
+- benchmarks/**
+- benchmark/**
+- evaluation/**
+- sgl-kernel/tests/**
+- sgl-kernel/benchmark/**
+- python/sglang/tests/**
+requirements:
+- name: virtualenv
+  type: directory
+  path: /opt/venv
+- name: cuda
+  type: directory
+  path: /usr/local/cuda
+- name: python
+  type: executable
+  path: /opt/venv/bin/python3
+- name: nvcc
+  type: executable
+  path: /usr/local/cuda/bin/nvcc
+- name: ninja
+  type: executable
+  path: /opt/venv/bin/ninja
+- name: torch
+  type: python_module
+  module: torch
+- name: triton
+  type: python_module
+  module: triton
+- name: wheel
+  type: python_module
+  module: wheel
+- name: packaging
+  type: python_module
+  module: packaging
+bindings:
+- name: sglang
+  module: sglang
+  source_package: python/sglang
+  mode: editable
+  expected_root: /sgl-workspace/sglang/python/sglang
+- name: sgl_kernel
+  module: sgl_kernel
+  source_package: sgl-kernel/python/sgl_kernel
+  mode: copied
+  expected_root: /opt/venv/lib
+packages:
+- name: sglang
+  root: python
+  python_root: python/sglang
+  native_roots: []
+  build_system: python
+  binding: sglang
+- name: sgl_kernel
+  root: sgl-kernel
+  python_root: sgl-kernel/python/sgl_kernel
+  native_roots:
+  - sgl-kernel/csrc
+  - sgl-kernel/include
+  - sgl-kernel/cmake
+  build_system: sglang_native
+  binding: sgl_kernel
+required_capabilities:
+- python_overlay
+- jit_warmup
+- package_build

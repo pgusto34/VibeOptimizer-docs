@@ -1,0 +1,72 @@
+# Authoring template. Replace images, model, paths and trusted commands for your engine.
+# These values are structurally checked; they are not a provisioned runnable environment.
+schema_version: 3
+repository: ${BENCHMARK_REPOSITORY}
+case_id: my-serving-case
+architecture: "9.0"
+mode: optimize
+optimization_backend: auto
+infrastructure_retries: 2
+calibration_captures: 1
+simulation_capture:
+  mode: bounded
+  decode_iterations: 8
+agent:
+  provider: codex
+  harness: vibeoptimizer-controller
+  model: your-optimizer-model
+  reasoning_effort: high
+  turns: 2
+  critic: none
+budgets:
+  attempts: 1
+  wall_time_minutes: 1440
+  optimization_minutes: 60
+  build_minutes: 60
+  benchmark_minutes: 60
+  max_tokens: 300000
+  max_tokens_per_attempt: 300000
+performance:
+  gate: serving
+  repetitions: 5
+  max_throughput_regression_pct: 0.0
+  max_repetition_deviation_pct: 3.0
+  max_tpot_regression_pct: 1.0
+  target_throughput_improvement_pct: null
+knowledge:
+  path: ${VIBEOPTIMIZER_STATE_DIR}/knowledge
+stability:
+  suite: token-logprobs-v1
+  numerics: exact
+  atol: 0.001
+  rtol: 0.001
+  repetitions: 3
+  timeout_minutes: 40
+topology:
+  engine:
+    image:
+      tag: docker.io/your-org/vllm:my-serving-case-9.0-before
+      digest: "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+    checkout: /workspace/vllm
+    site_packages: /opt/venv/lib/python3.12/site-packages/vllm
+    build_command: python -m pip install --no-build-isolation . && test -d /opt/venv/lib/python3.12/site-packages/vllm
+    install_command: cp -a /workspace/vllm/vllm/. /opt/venv/lib/python3.12/site-packages/vllm/
+    # Adapt model arguments for your pinned model and engine; do not use an eager-only smoke.
+    smoke_command: >-
+      python -c "from vllm import LLM; LLM(model='/snapshot', max_model_len=4096); print('ENGINE_SMOKE_OK')"
+    snapshot_path: /snapshot
+    kernel_cache: ${VIBEOPTIMIZER_STATE_DIR}/kernel-cache
+  analysis:
+    image:
+      tag: ghcr.io/your-org/analysis:baseline
+      digest: "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+    port: 8799
+  harness:
+    image:
+      tag: ghcr.io/your-org/optimizer:baseline
+      digest: "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    workdir: /workspace
+    egress: bridge
+    mounts: []
+# Generic automatic preparation will resolve its analysis provider and handoff.
+# Add explicit auth/model mounts appropriate to your private environment.

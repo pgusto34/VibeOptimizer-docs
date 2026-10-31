@@ -1,0 +1,26 @@
+# Authoring template; replace model repository/revision for your prepared engine.
+schema_version: 2
+model:
+  repository: your-org/your-model
+  revision: "1111111111111111111111111111111111111111"
+server:
+  tensor_parallel_size: 1
+  pipeline_parallel_size: 1
+  data_parallel_size: 1
+  expert_parallel_size: 1
+  dtype: bfloat16
+  max_model_len: 4096
+  extra_args: []
+benchmark:
+  script: vllm
+  objective: output_throughput
+  input:
+    kind: generated
+    dataset: random
+    input_tokens: 1024
+  output_tokens: 1024
+  requests: 32
+  max_concurrency: 1
+  request_rate: inf
+  seed: 42
+  repetitions: 5

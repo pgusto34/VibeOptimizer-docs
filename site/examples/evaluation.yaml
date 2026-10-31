@@ -1,0 +1,8 @@
+# Controller-private policy. Never mount this file into optimizer/critic containers.
+# This example has no focused module probe or historical latency-recovery gate.
+# Add actual model module paths to targets to enable applicable focused checks.
+targets: []
+err_max: 0.05
+recover_pass: null
+tokens: 8
+iters: 3000

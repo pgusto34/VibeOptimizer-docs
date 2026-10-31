@@ -1,0 +1,7 @@
+# Optional explicit preparation recipe; referenced by campaign.preparation.recipe.
+schema_version: 2
+adapter: generic-serving
+# auto permits measured fallback; simulation_required requires usable simulation.
+diagnostics_mode: auto
+simulation_discovery: native-v1
+capture_timeout_seconds: 1800

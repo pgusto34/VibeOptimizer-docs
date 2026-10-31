@@ -1,0 +1,28 @@
+# Reusable vLLM source-build policy. Copy into a case directory and reference it
+# with architectures.<architecture>.recipe in case.yaml. Adjust installation
+# paths for that engine image; GPU architecture/toolchain come from case.yaml.
+schema_version: 2
+source_root: /workspace/vllm
+editable_paths: ["**"]
+protected_paths: [".git/**", "tests/**"]
+requirements:
+  - name: python
+    type: executable
+    path: /opt/venv/bin/python3
+  - name: torch
+    type: python_module
+    module: torch
+bindings:
+  - name: vllm
+    module: vllm
+    source_package: vllm
+    mode: copied
+    expected_root: /opt/venv/lib
+required_capabilities: [python_overlay, jit_warmup, package_build]
+packages:
+  - name: vllm
+    root: .
+    python_root: vllm
+    native_roots: [csrc, cmake]
+    build_system: vllm
+    binding: vllm
